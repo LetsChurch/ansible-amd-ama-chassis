@@ -1,0 +1,4 @@
+---
+ama_devices: 1
+hugepages_per_ama_device: 2048
+additional_hugepages: 96

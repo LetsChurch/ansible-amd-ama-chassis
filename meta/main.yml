@@ -1,0 +1,16 @@
+galaxy_info:
+  author: Ken Powers
+  description: Set up a chassis for AMD Advanced Media Acceleration
+  company: Let's Church
+  license: UNLICENSE
+  min_ansible_version: "2.1"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+
+  galaxy_tags:
+    - amd
+    - ama
+    - ma35d

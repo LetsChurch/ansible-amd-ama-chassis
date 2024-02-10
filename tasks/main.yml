@@ -1,0 +1,28 @@
+---
+- name: Set GRUB options for Intel systems
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: "^GRUB_CMDLINE_LINUX_DEFAULT="
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash intel_iommu=on iommu=pt"'
+    backrefs: yes
+  when: "'GenuineIntel' in ansible_processor"
+  notify: update-grub
+- name: Set GRUB options for AMD systems
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: "^GRUB_CMDLINE_LINUX_DEFAULT="
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash amd_iommu=on iommu=pt"'
+    backrefs: yes
+  when: "'AuthenticAMD' in ansible_processor"
+  notify: update-grub
+- name: Calculate the total number of huge pages
+  set_fact:
+    total_hugepages: "{{ (ama_devices * hugepages_per_ama_device) + additional_hugepages }}"
+- name: Set Huge Pages
+  ansible.posix.sysctl:
+    name: vm.nr_hugepages
+    value: "{{ total_hugepages }}"
+    state: present
+    reload: true
+    sysctl_set: true
+    sysctl_file: /etc/sysctl.conf
